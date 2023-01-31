@@ -1,0 +1,3 @@
+[submodule "lab2_expressions"]
+	path = lab2_expressions
+	url = git@bitbucket.org:miun_dt042g/lab2_expressions.git
