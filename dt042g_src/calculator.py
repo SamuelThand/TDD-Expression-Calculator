@@ -13,6 +13,13 @@ class Calculator:
     def calculate(self, calculation) -> str:
         pass
 
+    def tokenize_expression(self, expression) -> str:
+
+        expression = expression.replace(' ', '')
+
+        return expression
+
+
 
 def main():
     epilog = 'DT042G Calculator V' + __version__

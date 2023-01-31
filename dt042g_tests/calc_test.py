@@ -1,16 +1,27 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
+import unittest
+from dt042g_src import calculator
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import unittest
-import dt042g_src.calculator as src
 
+class TestCalculator(unittest.TestCase):
 
-class Test(unittest.TestCase):
+    def setUp(self):
+        self.calculator = calculator.Calculator()
 
-    def test_tmp(self):
-        self.assertTrue(True, "It's true")
+    def validationtest_tmp(self):
+        #   TODO validation test on calculate method using json data
+        pass
+
+    #   Tokenize
+
+    def test_expression_should_not_contain_whitespace(self):
+        expression = ' 2+ 3'
+        self.assertNotIn(' ', self.calculator.tokenize_expression(expression))
 
 
 if __name__ == '__main__':
