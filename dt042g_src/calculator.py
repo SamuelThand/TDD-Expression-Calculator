@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import re
 from enum import Enum
+from dataclasses import dataclass
 import json
 import sys
 
@@ -15,7 +17,7 @@ class Calculator:
         return "result"
 
     def tokenize_expression(self, expression) -> list:
-        expression = expression.replace(' ', '')
+        expression = re.sub('[ "\n\t]', '', expression)
 
         i = 0
         tokens = []
@@ -25,9 +27,10 @@ class Calculator:
                 while i < len(expression) and expression[i].isdigit():
                     number += expression[i]
                     i += 1
-                tokens.append(number)
+                tokens.append(Token(type=TokenType.NUMBER, value=number))
                 continue
-            tokens.append(expression[i])
+
+            tokens.append(Token(type=TokenType.NUMBER, value=expression[i]))
             i += 1
 
         return list(tokens)
@@ -43,7 +46,7 @@ class TokenType(Enum):
     LEFT_PARENTHESIS = 6
     RIGHT_PARENTHESIS = 7
 
-
+@dataclass
 class Token:
     type: TokenType
     value: any
