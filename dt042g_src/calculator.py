@@ -18,7 +18,7 @@ class Calculator:
 
     def tokenize_expression(self, expression) -> list:
         expression = re.sub('[ "\n\t]', '', expression)
-
+        operators = ['+', '-', '*', '/', '^', '(', ')']
         i = 0
         tokens = []
         while i < len(expression):
@@ -28,11 +28,26 @@ class Calculator:
                     number += expression[i]
                     i += 1
                 tokens.append(Token(type=TokenType.NUMBER, value=number))
-                continue
 
-            # elif
-            tokens.append(Token(type=TokenType.NUMBER, value=expression[i]))
-            i += 1
+            elif expression[i] in operators:
+                if expression[i] == operators[0]:
+                    tokens.append(Token(type=TokenType.PlUS, value=expression[i]))
+                elif expression[i] == operators[1]:
+                    tokens.append(Token(type=TokenType.MINUS, value=expression[i]))
+                elif expression[i] == operators[2]:
+                    tokens.append(Token(type=TokenType.MULTIPLY, value=expression[i]))
+                elif expression[i] == operators[3]:
+                    tokens.append(Token(type=TokenType.DIVIDE, value=expression[i]))
+                elif expression[i] == operators[4]:
+                    tokens.append(Token(type=TokenType.EXPONENT, value=expression[i]))
+                elif expression[i] == operators[5]:
+                    tokens.append(Token(type=TokenType.LEFT_PARENTHESIS, value=expression[i]))
+                elif expression[i] == operators[6]:
+                    tokens.append(Token(type=TokenType.RIGHT_PARENTHESIS, value=expression[i]))
+                i += 1
+
+            else:
+                i += 1
 
         return list(tokens)
 
@@ -52,6 +67,9 @@ class TokenType(Enum):
 class Token:
     type: TokenType
     value: any
+
+    def __repr__(self):
+        return f'{self.type.name} "{self.value}"'
 
 
 def main():
