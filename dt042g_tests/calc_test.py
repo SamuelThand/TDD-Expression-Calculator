@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import json
 import os
 import sys
 import unittest
@@ -17,11 +17,15 @@ class TestCalculator(unittest.TestCase):
 
 class TestTokenizeExpression(unittest.TestCase):
 
-    def setUp(self):
-        self.calculator = Calculator()
-        self.expression = '" 2+ 3 / (23*9) ^ 4 - (42) - 456 "'
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.calculator = Calculator()
+        with open('../lab2_expressions/expressions.json') as file_handle:
+            cls.test_data = json.load(file_handle)
 
     #   TODO error handling for bad input
+    #   Ska dessa metoder höra hit eller till calculator testing?
+
     def test_should_not_allow_bad_input(self):
         pass
 
@@ -29,22 +33,32 @@ class TestTokenizeExpression(unittest.TestCase):
         pass
 
     def test_should_not_allow_wierd_stuff(self):
-        #(+)(+) (+(+(-))) for example
+        # (+)(+) (+(+(-))) for example
         pass
 
     def test_tokens_should_not_be_empty(self):
-        self.assertFalse(len(self.calculator.tokenize_expression(self.expression)) == 0)
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                self.assertFalse(len(self.calculator.tokenize_expression(expression)) == 0)
 
     def test_tokens_should_not_contain_whitespace(self):
-        for token in self.calculator.tokenize_expression(self.expression):
-            self.assertNotIn(' ', token.value)
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                for token in self.calculator.tokenize_expression(expression):
+                    self.assertNotIn(' ', token.value)
 
     def test_tokens_should_not_contain_quotemarks(self):
-        for token in self.calculator.tokenize_expression(self.expression):
-            self.assertNotIn('"', token.value)
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                for token in self.calculator.tokenize_expression(expression):
+                    self.assertNotIn('"', token.value)
 
     def test_tokens_should_be_list(self):
-        self.assertIsInstance(self.calculator.tokenize_expression(self.expression), list)
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                self.assertIsInstance(self.calculator.tokenize_expression(expression), list)
+
+    # TODO - rewrite tests to be dynamic and use test data?
 
     def test_should_group_digits(self):
         expression = '0-(123)+2'
@@ -86,10 +100,10 @@ class TestTokenizeExpression(unittest.TestCase):
         self.assertTrue(tokens[10].type == TokenType.RIGHT_PARENTHESIS, f'Token type is {tokens[10].type}')
 
     def test_tokens_should_be_token_objects(self):
-        for token in self.calculator.tokenize_expression(self.expression):
-            self.assertIsInstance(token, Token)
-
-
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                for token in self.calculator.tokenize_expression(expression):
+                    self.assertIsInstance(token, Token)
 
 
 class TestToken(unittest.TestCase):

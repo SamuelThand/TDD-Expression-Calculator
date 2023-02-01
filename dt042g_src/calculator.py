@@ -11,12 +11,58 @@ __version__ = '1.0'
 __desc__ = "A simple calculator that evaluates a mathematical expression using + - / * ()"
 
 
+class TokenType(Enum):
+    NUMBER = 0
+    PlUS = 1
+    MINUS = 2
+    MULTIPLY = 3
+    DIVIDE = 4
+    EXPONENT = 5
+    LEFT_PARENTHESIS = 6
+    RIGHT_PARENTHESIS = 7
+
+
+@dataclass
+class Token:
+    type: TokenType
+    value: any
+
+    def __repr__(self):
+        return f'{self.type.name} "{self.value}"'
+
+
+@dataclass
+class NumberNode:
+    value: float
+
+
+# TODO lägg till typ identifier för olika nodes
+@dataclass
+class OperationNode:
+    left_node: any
+    right_node: any
+
+
+#   TODO reflektera över design - OOP/Functional/Namespaces
 class Calculator:
 
-    def calculate(self, calculation) -> str:
+    @staticmethod
+    def calculate(calculation) -> str:
         return "result"
 
-    def tokenize_expression(self, expression) -> list:
+    def parse_tokens(self, tokens):
+        pass
+
+    def identify_term(self):
+        # TODO Look for term
+        pass
+
+    def identify_factor(self):
+        # TODO Look for factors, throw error if multiple operators found
+        pass
+
+    @staticmethod
+    def tokenize_expression(expression) -> list:
         expression = re.sub('[ "\n\t]', '', expression)
         operators = ['+', '-', '*', '/', '^', '(', ')']
         i = 0
@@ -52,26 +98,6 @@ class Calculator:
         return list(tokens)
 
 
-class TokenType(Enum):
-    NUMBER = 0
-    PlUS = 1
-    MINUS = 2
-    MULTIPLY = 3
-    DIVIDE = 4
-    EXPONENT = 5
-    LEFT_PARENTHESIS = 6
-    RIGHT_PARENTHESIS = 7
-
-
-@dataclass
-class Token:
-    type: TokenType
-    value: any
-
-    def __repr__(self):
-        return f'{self.type.name} "{self.value}"'
-
-
 def main():
     epilog = 'DT042G Calculator V' + __version__
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
@@ -79,7 +105,7 @@ def main():
                         help='The expression to calculate. Ex: 2+(4-5)/5*3')
     arguments = parser.parse_args()
 
-    print(Calculator().calculate(arguments.calculate))
+    print(Calculator.calculate(arguments.calculate))
 
 
 if __name__ == '__main__':
