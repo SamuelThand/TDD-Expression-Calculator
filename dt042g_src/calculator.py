@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+from enum import Enum
 import json
 import sys
 
@@ -11,14 +12,41 @@ __desc__ = "A simple calculator that evaluates a mathematical expression using +
 class Calculator:
 
     def calculate(self, calculation) -> str:
-        pass
+        return "result"
 
-    def tokenize_expression(self, expression) -> str:
-
+    def tokenize_expression(self, expression) -> list:
         expression = expression.replace(' ', '')
 
-        return expression
+        i = 0
+        tokens = []
+        while i < len(expression):
+            if expression[i].isdigit():
+                number = ''
+                while i < len(expression) and expression[i].isdigit():
+                    number += expression[i]
+                    i += 1
+                tokens.append(number)
+                continue
+            tokens.append(expression[i])
+            i += 1
 
+        return list(tokens)
+
+
+class TokenType(Enum):
+    NUMBER = 0
+    PlUS = 1
+    MINUS = 2
+    MULTIPLY = 3
+    DIVIDE = 4
+    EXPONENT = 5
+    LEFT_PARENTHESIS = 6
+    RIGHT_PARENTHESIS = 7
+
+
+class Token:
+    type: TokenType
+    value: any
 
 
 def main():
