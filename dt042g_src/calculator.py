@@ -30,6 +30,7 @@ class Calculator:
                 tokens.append(Token(type=TokenType.NUMBER, value=number))
                 continue
 
+            # elif
             tokens.append(Token(type=TokenType.NUMBER, value=expression[i]))
             i += 1
 
@@ -45,6 +46,7 @@ class TokenType(Enum):
     EXPONENT = 5
     LEFT_PARENTHESIS = 6
     RIGHT_PARENTHESIS = 7
+
 
 @dataclass
 class Token:
