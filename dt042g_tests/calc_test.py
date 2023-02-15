@@ -23,13 +23,14 @@ class TestCalculator(unittest.TestCase):
 
     def test_non_decimal_result_should_be_int(self):
         calculator = Calculator("4/4")
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        # calculator.__tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertIsInstance(calculator.calculate(), int)
 
     def test_decimal_result_should_be_float(self):
         calculator = Calculator("4/3")
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertIsInstance(calculator.calculate(), float)
 
@@ -149,11 +150,11 @@ class TestNextToken(unittest.TestCase):
         for expression in self.test_data:
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 tokens_copy = calculator.tokenize_calculation()
                 calculator.next_token()
                 calculator.next_token()
-                self.assertEqual(tokens_copy[1], calculator.current_token)
+                self.assertEqual(tokens_copy[1], calculator.__dict__["_Calculator__current_token"])
 
 
 class TestCalculateExpression(unittest.TestCase):
@@ -165,7 +166,7 @@ class TestCalculateExpression(unittest.TestCase):
 
     def test_malformed_expression_should_raise_error(self):
         calculator = Calculator("5+((3/2)")
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertRaises(ValueError, calculator.calculate_expression)
 
@@ -173,14 +174,14 @@ class TestCalculateExpression(unittest.TestCase):
         for expression, expected_result in self.test_data.items():
             with self.subTest(expression=expression, expected_result=expected_result):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertEqual(expected_result, calculator.calculate_expression())
 
     def test_should_handle_leading_parenthesis(self):
         expression = "(2*2/4^4-3+1+2*2+2)"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(4.015625, calculator.calculate_expression())
 
@@ -188,7 +189,7 @@ class TestCalculateExpression(unittest.TestCase):
         for expression in self.test_data:
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertIsInstance(calculator.calculate_expression(), float)
 
@@ -203,14 +204,14 @@ class TestIdentifyTerm(unittest.TestCase):
         for expression in self.test_data:
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertIsInstance(calculator.identify_term(), float)
 
     def test_should_return_first_term(self):
         expression = "2*3*5/2+5"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(2 * 3 * 5 / 2, calculator.identify_term())
 
@@ -226,21 +227,21 @@ class TestIdentifyFactor(unittest.TestCase):
         for expression in self.test_data:
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertIsInstance(calculator.identify_factor(), float)
 
     def test_should_return_first_factor(self):
         expression = "2*3*5/2+5"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(2, calculator.identify_factor())
 
     def test_should_handle_negation(self):
         expression = "-2*3*5/2+5"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(-2, calculator.identify_factor())
 
@@ -256,28 +257,28 @@ class TestIdentifyExponentiation(unittest.TestCase):
         for expression in self.test_data:
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertIsInstance(calculator.identify_exponentiation(), float)
 
     def test_should_return_first_exponentiation(self):
         expression = "5^2^2+3/2^3"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(625, calculator.identify_exponentiation())
 
     def test_should_handle_leading_parenthesis(self):
         expression = "(2^2^(1+2*2)+2)"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(4294967298, calculator.identify_exponentiation())
 
     def test_should_return_first_number_if_no_exponentiation(self):
         expression = "45+34"
         calculator = Calculator(expression)
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertEqual(45, calculator.identify_exponentiation())
 
@@ -295,13 +296,13 @@ class TestIdentifyNumber(unittest.TestCase):
                 break
             with self.subTest(expression=expression):
                 calculator = Calculator(expression)
-                calculator.tokens = iter(calculator.tokenize_calculation())
+                calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
                 calculator.next_token()
                 self.assertIsInstance(calculator.identify_number(), float)
 
     def test_non_number_token_should_raise_error(self):
         calculator = Calculator("^5+(3/2)")
-        calculator.tokens = iter(calculator.tokenize_calculation())
+        calculator.__dict__["_Calculator__tokens"] = iter(calculator.tokenize_calculation())
         calculator.next_token()
         self.assertRaises(ValueError, calculator.identify_number)
 

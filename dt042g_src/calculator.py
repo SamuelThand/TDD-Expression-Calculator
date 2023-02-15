@@ -52,17 +52,17 @@ class Operations:
 
 
 class Calculator:
-    calculation: str
-    tokens: Iterator or None
-    current_token: Token or None
+    __calculation: str
+    __tokens: Iterator or None
+    __current_token: Token or None
 
     def __init__(self, calculation):
-        self.calculation = calculation
-        self.current_token = None
-        self.tokens = None
+        self.__calculation = calculation
+        self.__current_token = None
+        self.__tokens = None
 
     def calculate(self) -> float or int:
-        self.tokens = iter(self.tokenize_calculation())
+        self.__tokens = iter(self.tokenize_calculation())
         self.next_token()
         try:
             result = self.calculate_expression()
@@ -75,7 +75,7 @@ class Calculator:
             exit(1)
 
     def tokenize_calculation(self) -> list:
-        calculation = re.sub('[ "\n\t]', '', self.calculation)
+        calculation = re.sub('[ "\n\t]', '', self.__calculation)
         operators = ['+', '-', '*', '/', '^', '(', ')']
         i = 0
         tokens = []
@@ -108,60 +108,60 @@ class Calculator:
         return list(tokens)
 
     def next_token(self):
-        self.current_token = next(self.tokens, Token(TokenType.END, ''))
+        self.__current_token = next(self.__tokens, Token(TokenType.END, ''))
 
     def calculate_expression(self, end_of_expression=Token(TokenType.END, '')) -> float:
         term_a = self.identify_term()
-        while self.current_token.type in (TokenType.PLUS, TokenType.MINUS):
-            if self.current_token.type == TokenType.PLUS:
+        while self.__current_token.type in (TokenType.PLUS, TokenType.MINUS):
+            if self.__current_token.type == TokenType.PLUS:
                 self.next_token()
                 term_b = self.identify_term()
                 term_a = Operations.add(term_a, term_b)
-            elif self.current_token.type == TokenType.MINUS:
+            elif self.__current_token.type == TokenType.MINUS:
                 self.next_token()
                 term_a = term_a - self.identify_term()
 
         else:
-            if self.current_token.type is not end_of_expression.type:
+            if self.__current_token.type is not end_of_expression.type:
                 raise ValueError(f'Expected the end of an expression with a Token of type: {end_of_expression.type}'
-                                 f' but received {self.current_token.type}')
+                                 f' but received {self.__current_token.type}')
             else:
                 self.next_token()
                 return term_a
 
     def identify_term(self) -> float:
         factor_a = self.identify_factor()
-        while self.current_token.type in (TokenType.MULTIPLY, TokenType.DIVIDE):
-            if self.current_token.type == TokenType.MULTIPLY:
+        while self.__current_token.type in (TokenType.MULTIPLY, TokenType.DIVIDE):
+            if self.__current_token.type == TokenType.MULTIPLY:
                 self.next_token()
                 factor_b = self.identify_factor()
                 factor_a = Operations.multiply(factor_a, factor_b)
-            elif self.current_token.type == TokenType.DIVIDE:
+            elif self.__current_token.type == TokenType.DIVIDE:
                 self.next_token()
                 factor_a = factor_a / self.identify_factor()
         else:
             return factor_a
 
     def identify_factor(self) -> float:
-        while self.current_token.type in (TokenType.MINUS, TokenType.PLUS):
-            if self.current_token.type == TokenType.MINUS:
+        while self.__current_token.type in (TokenType.MINUS, TokenType.PLUS):
+            if self.__current_token.type == TokenType.MINUS:
                 self.next_token()
                 return Operations.negate(self.identify_factor())
-            elif self.current_token.type == TokenType.PLUS:
+            elif self.__current_token.type == TokenType.PLUS:
                 self.next_token()
                 return self.identify_factor()
         else:
             return self.identify_exponentiation()
 
     def identify_exponentiation(self) -> float:
-        if self.current_token.type == TokenType.LEFT_PARENTHESIS:
+        if self.__current_token.type == TokenType.LEFT_PARENTHESIS:
             self.next_token()
             return self.calculate_expression(end_of_expression=Token(TokenType.RIGHT_PARENTHESIS, ')'))
         else:
             base = self.identify_number()
             self.next_token()
 
-            if self.current_token.type == TokenType.EXPONENT:
+            if self.__current_token.type == TokenType.EXPONENT:
                 self.next_token()
                 exponent = self.identify_factor()
                 return Operations.exponentiation(base, exponent)
@@ -169,10 +169,10 @@ class Calculator:
                 return base
 
     def identify_number(self) -> float:
-        if self.current_token.type != TokenType.NUMBER:
-            raise ValueError(f"Expected TokenType.NUMBER, got '{self.current_token.type}'")
+        if self.__current_token.type != TokenType.NUMBER:
+            raise ValueError(f"Expected TokenType.NUMBER, got '{self.__current_token.type}'")
         else:
-            return float(self.current_token.value)
+            return float(self.__current_token.value)
 
 
 def main():
