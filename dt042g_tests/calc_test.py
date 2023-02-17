@@ -266,16 +266,6 @@ class TestCalculateFactor(unittest.TestCase):
         with open('../lab2_expressions/expressions.json') as file_handle:
             cls.test_data = json.load(file_handle)
 
-    def test_should_return_float(self):
-        """Tests that result is returned as float"""
-        for expression in self.test_data:
-            with self.subTest(expression=expression):
-                calculator = Calculator(expression)
-                calculator.__dict__["_Calculator__tokens"] = \
-                    iter(getattr(calculator, '_Calculator__tokenize_calculation')())
-                getattr(calculator, '_Calculator__next_token')()
-                self.assertIsInstance(calculator._calculate_factor(), float)
-
     def test_should_return_value_of_first_factor(self):
         """Tests that the value of the first factor is returned"""
         expression = "2*3*5/2+5"
@@ -292,6 +282,16 @@ class TestCalculateFactor(unittest.TestCase):
         getattr(calculator, '_Calculator__next_token')()
         self.assertEqual(-2, calculator._calculate_factor())
 
+    def test_should_return_float(self):
+        """Tests that result is returned as float"""
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                calculator = Calculator(expression)
+                calculator.__dict__["_Calculator__tokens"] = \
+                    iter(getattr(calculator, '_Calculator__tokenize_calculation')())
+                getattr(calculator, '_Calculator__next_token')()
+                self.assertIsInstance(calculator._calculate_factor(), float)
+
 
 class TestCalculateExponentiation(unittest.TestCase):
     """Tests for the Calculator._calculate_exponentiation() method"""
@@ -301,16 +301,6 @@ class TestCalculateExponentiation(unittest.TestCase):
         """Loads test data"""
         with open('../lab2_expressions/expressions.json') as file_handle:
             cls.test_data = json.load(file_handle)
-
-    def test_should_return_float(self):
-        """Tests that result is returned as float"""
-        for expression in self.test_data:
-            with self.subTest(expression=expression):
-                calculator = Calculator(expression)
-                calculator.__dict__["_Calculator__tokens"] = \
-                    iter(getattr(calculator, '_Calculator__tokenize_calculation')())
-                getattr(calculator, '_Calculator__next_token')()
-                self.assertIsInstance(calculator._calculate_exponentiation(), float)
 
     def test_should_return_value_of_first_exponentiation(self):
         """Tests that the value of the first exponentiation is returned"""
@@ -335,6 +325,16 @@ class TestCalculateExponentiation(unittest.TestCase):
         calculator.__dict__["_Calculator__tokens"] = iter(getattr(calculator, '_Calculator__tokenize_calculation')())
         getattr(calculator, '_Calculator__next_token')()
         self.assertEqual(45, calculator._calculate_exponentiation())
+
+    def test_should_return_float(self):
+        """Tests that result is returned as float"""
+        for expression in self.test_data:
+            with self.subTest(expression=expression):
+                calculator = Calculator(expression)
+                calculator.__dict__["_Calculator__tokens"] = \
+                    iter(getattr(calculator, '_Calculator__tokenize_calculation')())
+                getattr(calculator, '_Calculator__next_token')()
+                self.assertIsInstance(calculator._calculate_exponentiation(), float)
 
 
 class TestIdentifyNumber(unittest.TestCase):

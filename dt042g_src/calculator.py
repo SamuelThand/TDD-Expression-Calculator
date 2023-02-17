@@ -143,7 +143,8 @@ class Calculator:
                 term_a = Operations.add(term_a, term_b)
             elif self.__current_token.type == TokenType.MINUS:
                 self.__next_token()
-                term_a = term_a - self._calculate_term()
+                term_b = self._calculate_term()
+                term_a = Operations.subtract(term_a, term_b)
 
         else:
             if self.__current_token.type is not expected_end_of_expression.type:
