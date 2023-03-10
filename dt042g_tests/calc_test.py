@@ -425,6 +425,12 @@ class TestOperations(unittest.TestCase):
         b = 3
         self.assertEqual(2, Operations.divide(a, b))
 
+    def test_divide_by_zero(self):
+        """Tests that an error is raised for zero division"""
+        a = 6
+        b = 0
+        self.assertRaises(ZeroDivisionError, Operations.divide, a, b)
+
     def test_exponentiation(self):
         """Tests exponentiation works"""
         a = 6

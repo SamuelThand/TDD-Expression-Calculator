@@ -46,7 +46,11 @@ class Operations:
     def multiply(a, b): return a * b
 
     @staticmethod
-    def divide(a, b): return a / b
+    def divide(a, b):
+        if b == 0:
+            raise ZeroDivisionError("Can't divide by zero, exiting..")
+        else:
+            return a / b
 
     @staticmethod
     def exponentiation(a, b): return a ** b
@@ -82,6 +86,9 @@ class Calculator:
                 return result
         except ValueError as e:
             print(f'{e}\nInvalid mathematical expression, exiting..')
+            exit(1)
+        except ZeroDivisionError as e:
+            print(e)
             exit(1)
 
     def __tokenize_calculation(self) -> list:
